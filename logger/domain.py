@@ -1,42 +1,50 @@
 from jupyter_core.version import pattern
 
 
-class logger_manager:
+class LoggerManager:
 
     @staticmethod
     def get_logger(type_logger):
-        pattern = console_pattern()
+        pattern_output = ConsolePattern()
         if type_logger == 'console':
-            pattern = console_pattern()
+            pattern_output = ConsolePattern()
         elif type_logger == 'file':
-            pattern = file_pattern()
+            pattern_output = FilePattern()
 
-        return logger(pattern)
+        return Logger(pattern_output)
 
 
-class logger:
-    def __init__(self, pattern):
-        self.pattern = pattern
+class Logger:
+    def __init__(self, pattern_output):
+        self.pattern = pattern_output
 
 
     def log(self,message):
-        self.pattern.write(message)
+        self.pattern.write(f"log:{message}")
 
+    def info(self, message):
+        self.pattern.write(f"info:{message}")
 
+    def warning(self, message):
+        self.pattern.write(f"warning:{message}")
 
-class console_pattern:
+    def error(self, message):
+        self.pattern.write(f"error:{message}")
+
+class ConsolePattern:
     def __init__(self):
         pass
 
     def write(self,msg):
         print(msg)
 
-class file_pattern:
+class FilePattern:
     def __init__(self):
         pass
 
-    def write(self,msg):
+    @staticmethod
+    def write(msg):
         with open('log.txt','a') as f:
-            f.write(msg)
+            f.writelines(msg+"\n")
             f.close()
 
